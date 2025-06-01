@@ -1,4 +1,4 @@
- Proyecto: "ChainValue" - Ecosistema descentralizado para trazabilidad, financiamiento e incentivos en cadenas productivas
+ Proyecto: "WorkChainMX" - Ecosistema descentralizado para trazabilidad, financiamiento e incentivos en cadenas productivas
 1. Claridad del problema
 Problema principal:
 Las cadenas productivas en sectores como el agroalimentario o educativo enfrentan baja trazabilidad, falta de financiamiento y escasa motivación para buenas prácticas.
