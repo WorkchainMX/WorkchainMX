@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WorkChainMX – Simulador</title>
+  <style>
+    :root {
+      --primary: #8fb8a0;
+      --primary-dark: #6a9c82;
+      --primary-light: #e8f3ee;
+      --success: #97c1b9;
+      --success-light: #e5f2f0;
+      --warning: #e6c190;
+      --warning-light: #faf0e1;
+      --border: #cce0d6;
+      --bg-main: #e8f3ee;
+      --bg-card: #f0f5f2;
+      --bg-element: #e5eee9;
+      --text-primary: #4a6b5d;
+      --text-secondary: #829e93;
+      --accent-1: #b8d4c8;
+      --accent-2: #c8dbd3;
+      --shadow: rgba(143, 184, 160, 0.15);
+      --gradient-1: #dce8e3;
+      --gradient-2: #e8f3ee;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 100%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      max-width: 1400px;
+      margin: 0 auto;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .main-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary) 0%, var(--accent-1) 100%);
+    }
+
+    h1 {
+      color: var(--primary-dark);
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .header-logo {
+      font-size: 2.5rem;
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    #form-container {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      display: none;
+    }
+
+    #form-container.visible {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .add-user-button {
+      display: block;
+      margin: 1.5rem auto;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-1) 100%);
+      color: var(--bg-main);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .add-user-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    }
+
+    input {
+      padding: 0.6rem;
+      margin: 0.4rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      background: var(--bg-element);
+      color: var(--text-primary);
+    }
+
+    input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+      background: var(--bg-main);
+    }
+
+    button {
+      padding: 0.6rem 1.2rem;
+      background: var(--primary);
+      color: var(--bg-main);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    button.success {
+      background: var(--success);
+    }
+
+    button.success:hover {
+      background: #7ba69e;
+    }
+
+    button.warning {
+      background: var(--warning);
+    }
+
+    button.warning:hover {
+      background: #d1a978;
+    }
+
+    #reputation-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .user {
+      background: var(--bg-card);
+      padding: 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary) 0%, var(--accent-1) 100%);
+    }
+
+    .user:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px var(--shadow);
+    }
+
+    .user h3 {
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .user-info {
+      background: var(--bg-element);
+      border-radius: 8px;
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .user-info p {
+      margin: 0.4rem 0;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .user-info p:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .wallet-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 25px -5px var(--shadow);
+      z-index: 1000;
+      min-width: 320px;
+      backdrop-filter: blur(8px);
+    }
+
+    .transaction-history {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .transaction-history::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary) 0%, var(--accent-1) 100%);
+    }
+
+    .transaction-history h2 {
+      color: var(--primary-dark);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.3rem;
+    }
+
+    .transaction-item {
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      background: var(--bg-element);
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+    }
+
+    .transaction-item:hover {
+      background: var(--bg-main);
+    }
+
+    .status-badge {
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .status-badge.paid {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .status-badge.pending {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .wallet-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .wallet-controls button {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+
+    .input-group {
+      margin: 0.8rem 0;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .reputation-badge {
+      background: var(--bg-element);
+      color: var(--primary-dark);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(143, 184, 160, 0.25);
+      backdrop-filter: blur(3px);
+      z-index: 999;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-header">
+    <h1><span class="header-logo">🌱</span> WorkChainMX – Reputación Simulada</h1>
+    <p>Reputación on-chain para trabajadores rurales e informales.</p>
+  </div>
+
+  <button class="add-user-button" onclick="toggleForm()">➕ Agregar Nuevo Usuario</button>
+
+  <!-- Formulario para agregar usuarios -->
+  <div id="form-container">
+    <h2>Nuevo usuario</h2>
+    <div class="input-group">
+      <label>Nombre:</label>
+      <input type="text" id="nameInput" placeholder="Nombre del usuario" />
+    </div>
+    <div class="input-group">
+      <label>Validaciones:</label>
+      <input type="text" id="validationsInput" placeholder="Validaciones (separadas por coma)" />
+    </div>
+    <div class="wallet-controls">
+      <button onclick="addUser()">✅ Agregar usuario</button>
+      <button class="warning" onclick="toggleForm()">❌ Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Contenedor de usuarios -->
+  <div id="reputation-container"></div>
+
+  <!-- Historial de transacciones -->
+  <div class="transaction-history">
+    <h2>📊 Historial de Transacciones</h2>
+    <div id="transaction-list"></div>
+  </div>
+
+  <script>
+    let users = JSON.parse(localStorage.getItem("workchain_users")) || [
+      {
+        name: "María López",
+        address: "0x123",
+        connected: false,
+        loans: [
+          { amount: 100, paid: true, date: "2024-03-20", time: "10:30" },
+          { amount: 150, paid: true, date: "2024-03-21", time: "14:15" },
+          { amount: 200, paid: false, date: "2024-03-22", time: "16:45" },
+        ],
+        validations: ["ONG AgroMX", "Usuario Juan"]
+      },
+      {
+        name: "Pedro Sánchez",
+        address: "0x456",
+        connected: false,
+        loans: [
+          { amount: 50, paid: true, date: "2024-03-19", time: "09:20" },
+          { amount: 100, paid: true, date: "2024-03-20", time: "11:45" },
+        ],
+        validations: ["ONG AgroMX", "Cooperativa Rural"]
+      }
+    ];
+
+    function saveToStorage() {
+      localStorage.setItem("workchain_users", JSON.stringify(users));
+      renderTransactionHistory();
+    }
+
+    function calculateReputation(user) {
+      let score = 50;
+      const total = user.loans.length;
+      const pagados = user.loans.filter(loan => loan.paid).length;
+      if (total > 0) {
+        const ratio = pagados / total;
+        score += ratio * 40;
+      }
+      score += user.validations.length * 5;
+      return Math.min(score, 100).toFixed(0);
+    }
+
+    function formatDateTime(date, time) {
+      const options = { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric'
+      };
+      return `${new Date(date).toLocaleDateString('es-ES', options)} ${time || ''}`;
+    }
+
+    function renderUsers() {
+      const container = document.getElementById("reputation-container");
+      container.innerHTML = "";
+
+      users.forEach((user, index) => {
+        const div = document.createElement("div");
+        div.className = "user";
+        const reputation = calculateReputation(user);
+        div.innerHTML = `
+          <h3>🧑‍🌾 ${user.name}</h3>
+          <div class="reputation-badge">
+            ⭐ Reputación: ${reputation} / 100
+          </div>
+          <div class="user-info">
+            <p><strong>📋 Validaciones:</strong><br>${user.validations.join(", ") || "Ninguna"}</p>
+            <p><strong>💰 Historial de pagos:</strong><br>${user.loans.map(l => l.paid ? "✅" : "❌").join(" ")}</p>
+            <p><strong>👛 Wallet:</strong><br>${user.connected ? "🔓 Conectada - " + user.address : "🔒 Desconectada"}</p>
+          </div>
+          <div class="wallet-controls">
+            <button onclick="connectWallet(${index})">
+              ${user.connected ? "🔒 Desconectar" : "🔓 Conectar Wallet"}
+            </button>
+            <button onclick="openTransactionPopup(${index})" ${!user.connected ? 'disabled' : ''}>
+              💸 Nueva transacción
+            </button>
+            ${user.connected && user.loans.some(l => !l.paid) ? 
+              `<button class="success" onclick="payLoan(${index})">💵 Pagar préstamo</button>` : ''}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      renderTransactionHistory();
+    }
+
+    function renderTransactionHistory() {
+      const container = document.getElementById("transaction-list");
+      if (!container) return;
+
+      const allTransactions = users.flatMap(user => 
+        user.loans.map(loan => ({
+          userName: user.name,
+          amount: loan.amount,
+          paid: loan.paid,
+          date: loan.date,
+          time: loan.time,
+          paidDate: loan.paidDate,
+          paidTime: loan.paidTime
+        }))
+      ).sort((a, b) => {
+        const dateA = new Date(a.date + 'T' + (a.time || '00:00'));
+        const dateB = new Date(b.date + 'T' + (b.time || '00:00'));
+        return dateB - dateA;
+      });
+
+      container.innerHTML = allTransactions.map(tx => `
+        <div class="transaction-item">
+          <div>
+            <strong>${tx.userName}</strong><br>
+            <small>${formatDateTime(tx.date, tx.time)}</small>
+            ${tx.paid && tx.paidDate ? 
+              `<br><small>Pagado el: ${formatDateTime(tx.paidDate, tx.paidTime)}</small>` : 
+              ''}
+          </div>
+          <div style="text-align: right">
+            <div style="margin-bottom: 0.3rem">${tx.amount} MXN</div>
+            <span class="status-badge ${tx.paid ? 'paid' : 'pending'}">
+              ${tx.paid ? '✅ Pagado' : '⏳ Pendiente'}
+            </span>
+          </div>
+        </div>
+      `).join('');
+
+      if (allTransactions.length === 0) {
+        container.innerHTML = `
+          <div class="transaction-item" style="text-align: center">
+            <p>No hay transacciones registradas</p>
+          </div>
+        `;
+      }
+    }
+
+    function toggleForm() {
+      const form = document.getElementById("form-container");
+      form.classList.toggle("visible");
+    }
+
+    function getCurrentDateTime() {
+      const now = new Date();
+      const date = now.toISOString().split('T')[0];
+      const time = now.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      return { date, time };
+    }
+
+    function openTransactionPopup(index) {
+      const user = users[index];
+      if (!user.connected) {
+        alert("❌ Debes conectar la wallet primero.");
+        return;
+      }
+
+      const overlay = document.createElement("div");
+      overlay.className = "overlay";
+      document.body.appendChild(overlay);
+
+      const popup = document.createElement("div");
+      popup.className = "wallet-popup";
+      
+      popup.innerHTML = `
+        <h4>💳 Nueva Transacción</h4>
+        <p>Wallet: ${user.address}</p>
+        <div class="input-group">
+          <label>Monto (MXN):</label>
+          <input type="number" id="amount-input" min="1" value="100" step="50">
+        </div>
+        <p>¿Confirmar transacción para ${user.name}?</p>
+        <div class="wallet-controls">
+          <button class="success" onclick="confirmTransaction(${index})">✅ Confirmar</button>
+          <button class="warning" onclick="closePopup()">❌ Cancelar</button>
+        </div>
+      `;
+      document.body.appendChild(popup);
+
+      setTimeout(() => {
+        const input = document.getElementById('amount-input');
+        if (input) input.focus();
+      }, 100);
+    }
+
+    function closePopup() {
+      const popup = document.querySelector(".wallet-popup");
+      const overlay = document.querySelector(".overlay");
+      if (popup) popup.remove();
+      if (overlay) overlay.remove();
+    }
+
+    function confirmTransaction(index) {
+      const user = users[index];
+      const amountInput = document.getElementById('amount-input');
+      const amount = parseInt(amountInput.value);
+      
+      if (isNaN(amount) || amount <= 0) {
+        alert("❌ Por favor ingresa un monto válido");
+        return;
+      }
+
+      const { date, time } = getCurrentDateTime();
+      user.loans.push({ 
+        amount, 
+        paid: false,
+        date,
+        time
+      });
+      
+      closePopup();
+      saveToStorage();
+      renderUsers();
+      alert(`✅ Nueva transacción de ${amount} MXN registrada para ${user.name}`);
+    }
+
+    function payLoan(index) {
+      const user = users[index];
+      const unpaidLoan = user.loans.find(l => !l.paid);
+      if (unpaidLoan) {
+        const { date, time } = getCurrentDateTime();
+        unpaidLoan.paid = true;
+        unpaidLoan.paidDate = date;
+        unpaidLoan.paidTime = time;
+        
+        saveToStorage();
+        renderUsers();
+        alert(`✅ Pago de ${unpaidLoan.amount} MXN procesado correctamente`);
+      }
+    }
+
+    function connectWallet(index) {
+      users[index].connected = !users[index].connected;
+      saveToStorage();
+      renderUsers();
+      alert(users[index].connected
+        ? `🔗 Simulación: ${users[index].name} conectó su wallet.`
+        : `🚪 ${users[index].name} desconectó su wallet.`);
+    }
+
+    function addUser() {
+      const name = document.getElementById("nameInput").value.trim();
+      const validationsRaw = document.getElementById("validationsInput").value;
+      const validations = validationsRaw.split(",").map(v => v.trim()).filter(v => v);
+      if (name === "") return alert("Nombre requerido");
+      users.push({
+        name,
+        address: "0x" + Math.random().toString(16).substr(2, 8),
+        loans: [],
+        validations,
+        connected: false
+      });
+      saveToStorage();
+      renderUsers();
+    }
+
+    renderUsers();
+  </script>
+</body>
+</html>
